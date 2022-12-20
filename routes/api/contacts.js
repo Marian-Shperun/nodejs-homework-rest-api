@@ -5,12 +5,12 @@ const {
   removeContact,
   addContact,
   updateContact,
-} = require("../../models/contacts.js");
+} = require("../../controllers/contacts.js");
 
 const {
   contactValidation,
   contactUpdateValidation,
-} = require("../../models/validation.js");
+} = require("../../schemas/validationsForContacts.js");
 
 const router = express.Router();
 
