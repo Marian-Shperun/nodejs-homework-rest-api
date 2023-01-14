@@ -1,4 +1,4 @@
-const Joi = require("joi");
+const { contactValidate } = require("../validations");
 
 const contactValidation = (req, res, next) => {
   const body = req.body;
@@ -6,20 +6,7 @@ const contactValidation = (req, res, next) => {
   if (!body.favorite) {
     body.favorite = false;
   }
-
-  const schema = Joi.object({
-    name: Joi.string().min(3).required(),
-    email: Joi.string().email({ minDomainSegments: 2 }).required(),
-    phone: Joi.string()
-      .pattern(/^[+]*[-\s./0-9]*$/, {
-        name: "numbers",
-      })
-      .min(9)
-      .required(),
-    favorite: Joi.bool().required(),
-  });
-
-  const { error } = schema.validate(body);
+  const { error } = contactValidate.addContactSchema.validate(body);
   if (error) {
     const erorMessage = Object.values(error.message)
       .filter((el) => el !== '"')
@@ -32,17 +19,7 @@ const contactValidation = (req, res, next) => {
 const contactUpdateValidation = (req, res, next) => {
   const body = req.body;
 
-  const schema = Joi.object({
-    name: Joi.string().min(3),
-    email: Joi.string().email({ minDomainSegments: 2 }),
-    phone: Joi.string()
-      .pattern(/^[+]*[-\s./0-9]*$/, {
-        name: "numbers",
-      })
-      .min(9),
-    favorite: Joi.bool(),
-  });
-  const { error } = schema.validate(body);
+  const { error } = contactValidate.updateContactSchema.validate(body);
   if (error) {
     const erorMessage = Object.values(error.message)
       .filter((el) => el !== '"')
@@ -52,4 +29,8 @@ const contactUpdateValidation = (req, res, next) => {
   next();
 };
 
-module.exports = { contactValidation, contactUpdateValidation };
+const validateContacts = {
+  contactValidation,
+  contactUpdateValidation,
+};
+module.exports = validateContacts;

@@ -16,6 +16,10 @@ const contsctSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "users",
+  },
 });
 
 module.exports = mongoose.model("contacts", contsctSchema);

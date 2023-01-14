@@ -1,12 +1,19 @@
 const mongoose = require("mongoose");
 const Contacts = require("../models/contacts.js");
-const { v4: uuidv4 } = require("uuid");
 
 const listContacts = async (req, res) => {
   try {
-    const contacts = await Contacts.find();
+    // data current user
+    const { _id: owner } = req.user;
+    // pagination
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (page - 1) * limit;
+    const contacts = await Contacts.find({ owner }, "-createdAt", {
+      skip,
+      limit,
+    }).populate("owner", "email");
+
     res.status(200).json({ list_contacts: contacts });
-    return contacts;
   } catch (err) {
     res.status(500).json({ message: `Something went wrong` });
   }
@@ -47,15 +54,15 @@ const removeContact = async (req, res) => {
 
 const addContact = async (req, res) => {
   const body = req.body;
-  console.log(body);
+  const { _id: owner } = req.user;
   try {
     if (!Object.values(body).length) {
       return res.status(400).json({ message: "missing fields" });
     }
 
     const newContact = new Contacts({
-      id: uuidv4(),
       ...body,
+      owner,
     });
 
     await newContact.save();
