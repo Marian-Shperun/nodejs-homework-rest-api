@@ -15,10 +15,6 @@ router.post("/register", validateAuth(registerSchema), ctrl.register);
 // signin
 router.post("/login", validateAuth(loginSchema), ctrl.login);
 
-// Verification user
-router.post("/verify", ctrl.reVerification);
-router.get("/verify/:verificationToken", ctrl.verify);
-
 // current user
 router.get("/current", autenticate, ctrl.getCurrent);
 
